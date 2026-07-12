@@ -1,0 +1,26 @@
+# Local development orchestration.
+# Usage:  docker compose up   → open http://localhost:5173
+services:
+  web:
+    build: .
+    container_name: vbs-web-dev
+    ports:
+      # host:container — Vite dev server.
+      - "5173:5173"
+    volumes:
+      # Bind-mount the source so edits on the host trigger HMR inside the container.
+      - .:/app
+      # Anonymous volume keeps the container's node_modules (built for alpine/linux)
+      # from being shadowed by a host node_modules (which may be built for another OS).
+      - /app/node_modules
+    environment:
+      # Chokidar/Vite polling — required for reliable file watching across the
+      # Docker bind mount (especially on Windows/macOS hosts).
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    env_file:
+      # Loads VITE_GAS_API_URL etc. (git-ignored).
+      - .env
+    # Keep STDIN open so the dev server behaves nicely.
+    stdin_open: true
+    tty: true

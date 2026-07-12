@@ -1,0 +1,46 @@
+# ─── Dependencies ───────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ─── Build output ───────────────────────────────
+dist/
+dist-ssr/
+*.local
+
+# ─── Environment / secrets (NEVER commit these) ──
+# API endpoints, keys and any Google service-account files must stay local.
+.env
+.env.*
+!.env.example
+*.pem
+*-key.json
+service-account*.json
+credentials*.json
+client_secret*.json
+
+# ─── Local data / scratch (sheet exports — may contain PII, NEVER commit) ──
+_scratch/
+*.csv
+*.xlsx
+*.xls
+
+# ─── Logs ───────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ─── Editor / OS ────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
