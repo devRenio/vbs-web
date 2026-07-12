@@ -1,0 +1,19 @@
+# Keep the build context small and avoid leaking secrets into the image.
+node_modules
+dist
+dist-ssr
+.git
+.gitignore
+.github
+.env
+.env.*
+!.env.example
+npm-debug.log*
+yarn-error.log*
+Dockerfile
+docker-compose.yml
+.dockerignore
+README.md
+*.local
+.DS_Store
+Thumbs.db
