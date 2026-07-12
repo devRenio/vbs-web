@@ -38,6 +38,7 @@ jobs:
         # so the URL is never committed to the repo.
         env:
           VITE_GAS_API_URL: ${{ secrets.VITE_GAS_API_URL }}
+          VITE_APP_TOKEN: ${{ secrets.VITE_APP_TOKEN }}
         run: npm run build
 
       - name: Upload Pages artifact

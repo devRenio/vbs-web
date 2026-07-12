@@ -58,6 +58,19 @@ const TOTAL_LABEL = "합계"; // No.-column value that terminates the roster.
 // Only expose tabs whose name matches a class (e.g. "3세1반"). Adjust if needed.
 const CLASS_TAB_PATTERN = /반/;
 
+// ── Access control ────────────────────────────────────────────────────────────
+// Set APP_TOKEN in Apps Script: Project Settings ⚙ → Script properties → Add
+//   Property: APP_TOKEN   Value: (same random string as VITE_APP_TOKEN in .env)
+// Every request must include this token (GET ?token=… / POST body.token).
+// This is NOT bank-grade crypto — the token is baked into the frontend bundle —
+// but it stops casual visitors and anyone who only guesses the GitHub Pages URL.
+// Without the token, doGet/doPost refuse to read or write the sheet.
+function assertToken_(token) {
+  const expected = PropertiesService.getScriptProperties().getProperty("APP_TOKEN");
+  if (!expected) throw new Error("서버 접근 토큰이 설정되지 않았습니다.");
+  if (String(token || "") !== expected) throw new Error("접근 권한이 없습니다.");
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(
@@ -154,6 +167,7 @@ function readClass_(className) {
 function doGet(e) {
   try {
     const params = (e && e.parameter) || {};
+    assertToken_(params.token);
     const action = params.action || "classes";
 
     if (action === "classes") {
@@ -182,6 +196,7 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
+    assertToken_(body.token);
 
     if (body.action === "setAttendance") {
       const { className, row, sessionKey, present } = body.payload || {};

@@ -1,10 +1,12 @@
-import { useState } from "react";
 import Header from "./components/Header";
 import ClassPicker from "./components/ClassPicker";
 import SessionPicker from "./components/SessionPicker";
 import AttendanceList from "./components/AttendanceList";
+import InvalidLink from "./components/InvalidLink";
 import { useClasses, useAttendance } from "./hooks/useAttendance";
+import { useAuth } from "./hooks/useAuth";
 import { SESSIONS } from "./types";
+import { useState } from "react";
 
 function ErrorBanner({ message, onRetry }) {
   if (!message) return null;
@@ -34,7 +36,7 @@ function Loading({ label }) {
   );
 }
 
-export default function App() {
+function AttendanceApp() {
   const [selectedClass, setSelectedClass] = useState(/** @type {string|null} */ (null));
   const [session, setSession] = useState(SESSIONS[0].key);
 
@@ -84,4 +86,12 @@ export default function App() {
       </main>
     </div>
   );
+}
+
+export default function App() {
+  const { status } = useAuth();
+
+  if (status === "checking") return <Loading label="잠시만 기다려 주세요" />;
+  if (status === "denied") return <InvalidLink />;
+  return <AttendanceApp />;
 }

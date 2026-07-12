@@ -33,6 +33,7 @@
 
 import { fetchWithRetry, RetryError } from "../utils/retry";
 import { createSerialQueue } from "../utils/queue";
+import { APP_TOKEN, assertClientAuthed, withTokenParam, withTokenBody } from "../utils/auth";
 
 /**
  * Configured GAS endpoints, in priority order.
@@ -48,6 +49,8 @@ const ENDPOINTS = [
   .flatMap((v) => String(v).split(/[\s,]+/))
   .map((s) => s.trim())
   .filter(Boolean);
+
+// APP_TOKEN imported from ../utils/auth (must match GAS Script Property APP_TOKEN).
 
 // Tuning (overridable via env; sensible defaults otherwise).
 const RETRIES = Number(import.meta.env.VITE_GAS_RETRIES ?? 3);
@@ -93,6 +96,8 @@ async function parseBody(res) {
  */
 async function request(build, { signal } = {}) {
   if (ENDPOINTS.length === 0) throw new Error("GAS URL이 설정되지 않았습니다.");
+  // Never hit the backend (and never fetch student names) without magic-link auth.
+  assertClientAuthed();
 
   let lastError;
   for (let hop = 0; hop < ENDPOINTS.length; hop++) {
@@ -138,7 +143,7 @@ async function request(build, { signal } = {}) {
 export function fetchClasses({ signal } = {}) {
   return request(
     (endpoint) => ({
-      url: withQuery(endpoint, new URLSearchParams({ action: "classes" })),
+      url: withQuery(endpoint, withTokenParam(new URLSearchParams({ action: "classes" }))),
       init: { method: "GET" },
     }),
     { signal }
@@ -154,7 +159,10 @@ export function fetchClasses({ signal } = {}) {
 export function fetchClass(className, { signal } = {}) {
   return request(
     (endpoint) => ({
-      url: withQuery(endpoint, new URLSearchParams({ action: "class", class: className })),
+      url: withQuery(
+        endpoint,
+        withTokenParam(new URLSearchParams({ action: "class", class: className }))
+      ),
       init: { method: "GET" },
     }),
     { signal }
@@ -177,7 +185,7 @@ export function setAttendance(update, { signal } = {}) {
           method: "POST",
           // text/plain keeps this a "simple request" → no CORS preflight (see note above).
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "setAttendance", payload: update }),
+          body: JSON.stringify(withTokenBody({ action: "setAttendance", payload: update })),
         },
       }),
       { signal }
