@@ -3,6 +3,7 @@ import ClassPicker from "./components/ClassPicker";
 import SessionPicker from "./components/SessionPicker";
 import AttendanceList from "./components/AttendanceList";
 import InvalidLink from "./components/InvalidLink";
+import AppFooter from "./components/AppFooter";
 import { useClasses, useAttendance } from "./hooks/useAttendance";
 import { useAuth } from "./hooks/useAuth";
 import { SESSIONS } from "./types";
@@ -47,7 +48,7 @@ function AttendanceApp() {
   const inClass = selectedClass != null;
 
   return (
-    <div className="min-h-full">
+    <div className="flex min-h-full flex-col">
       <Header
         className={selectedClass}
         teachers={teachers}
@@ -58,7 +59,7 @@ function AttendanceApp() {
 
       {inClass && <SessionPicker value={session} onChange={setSession} />}
 
-      <main className="pb-[calc(env(safe-area-inset-bottom)+2.5rem)]">
+      <main className="flex-1 pb-2">
         {!inClass ? (
           <div key="classes" className="animate-fade-in">
             <ErrorBanner message={classesState.error} onRetry={classesState.refresh} />
@@ -84,6 +85,7 @@ function AttendanceApp() {
           </div>
         )}
       </main>
+      <AppFooter />
     </div>
   );
 }
