@@ -7,6 +7,13 @@
     "Segoe UI", Roboto, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 html,
 body,
 #root {
@@ -24,7 +31,9 @@ body {
   letter-spacing: -0.01em;
   /* Prevent iOS tap zoom / rubber-band on attendance buttons. */
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
   overscroll-behavior-y: contain;
+  overflow-x: hidden;
 }
 
 /* Thin, unobtrusive scrollbars for the horizontal session picker. */
