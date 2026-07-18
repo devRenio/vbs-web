@@ -2,16 +2,36 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
+    <meta
+      id="viewport"
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <script>
+      (function () {
+        var meta = document.getElementById("viewport");
+        if (!meta) return;
+        var touch =
+          "ontouchstart" in window ||
+          (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+        var narrow = Math.min(screen.width, screen.height) <= 820;
+        if (touch && narrow) {
+          meta.setAttribute(
+            "content",
+            "width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+          );
+        }
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/vbs-web/vite.svg" />
     <link rel="apple-touch-icon" href="/vbs-web/pwa-icon.svg" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="출석부" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <!-- Mobile-first: teachers will primarily use smartphones -->
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="format-detection" content="telephone=no" />
     <meta name="theme-color" content="#4f46e5" />
     <meta name="description" content="수련회 출석 관리 시스템" />
     <meta name="author" content="devRenio" />
@@ -24,8 +44,8 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
     />
     <title>출석부 · 여름성경학교</title>
-    <script type="module" crossorigin src="/vbs-web/assets/index-BGyQeRNs.js"></script>
-    <link rel="stylesheet" crossorigin href="/vbs-web/assets/index-sXOduV1S.css">
+    <script type="module" crossorigin src="/vbs-web/assets/index-CPqYFfZu.js"></script>
+    <link rel="stylesheet" crossorigin href="/vbs-web/assets/index-BGfDbqJo.css">
   <link rel="manifest" href="/vbs-web/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/vbs-web/registerSW.js"></script></head>
   <body>
     <div id="root"></div>
