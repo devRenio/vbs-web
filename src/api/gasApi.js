@@ -183,9 +183,30 @@ export function setAttendance(update, { signal } = {}) {
         url: withQuery(endpoint),
         init: {
           method: "POST",
-          // text/plain keeps this a "simple request" → no CORS preflight (see note above).
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(withTokenBody({ action: "setAttendance", payload: update })),
+        },
+      }),
+      { signal }
+    )
+  );
+}
+
+/**
+ * Set a student's remark (비고 column — one note per student, not per session).
+ * @param {import("../types").RemarkUpdate} update
+ * @param {{ signal?: AbortSignal }} [opts]
+ * @returns {Promise<import("../types").Student>}
+ */
+export function setRemark(update, { signal } = {}) {
+  return writeQueue.enqueue(() =>
+    request(
+      (endpoint) => ({
+        url: withQuery(endpoint),
+        init: {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(withTokenBody({ action: "setRemark", payload: update })),
         },
       }),
       { signal }

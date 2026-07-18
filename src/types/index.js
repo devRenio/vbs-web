@@ -50,6 +50,16 @@ export const SESSION_MAP = Object.freeze(
  * @property {string} church      Church (교회) — non-sensitive context, optional to display.
  * @property {string} className   Class name = sheet tab name (e.g. "3세1반").
  * @property {Record<string, boolean>} attendance  Map of session key → present?.
+ * @property {string} remark        Free-text note (비고 column) — not tied to any session/day.
+ */
+
+/**
+ * Payload sent to update a student's remark (비고).
+ *
+ * @typedef {Object} RemarkUpdate
+ * @property {string} className
+ * @property {number} row
+ * @property {string} remark
  */
 
 /**

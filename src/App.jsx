@@ -6,8 +6,7 @@ import InvalidLink from "./components/InvalidLink";
 import AppFooter from "./components/AppFooter";
 import { useClasses, useAttendance } from "./hooks/useAttendance";
 import { useAuth } from "./hooks/useAuth";
-import { SESSIONS } from "./types";
-import { useState } from "react";
+import { useLastSelection } from "./hooks/useLastSelection";
 
 function ErrorBanner({ message, onRetry }) {
   if (!message) return null;
@@ -38,11 +37,12 @@ function Loading({ label }) {
 }
 
 function AttendanceApp() {
-  const [selectedClass, setSelectedClass] = useState(/** @type {string|null} */ (null));
-  const [session, setSession] = useState(SESSIONS[0].key);
-
   const classesState = useClasses();
-  const { students, teachers, loading, error, pending, refresh, toggle } =
+  const { selectedClass, setSelectedClass, session, setSession } = useLastSelection(
+    classesState.classes,
+    classesState.loading
+  );
+  const { students, teachers, loading, error, pending, refresh, toggle, saveRemark } =
     useAttendance(selectedClass);
 
   const inClass = selectedClass != null;
@@ -80,6 +80,7 @@ function AttendanceApp() {
                 sessionKey={session}
                 pending={pending}
                 onToggle={toggle}
+                onSaveRemark={saveRemark}
               />
             )}
           </div>

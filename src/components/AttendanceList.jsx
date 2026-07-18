@@ -7,10 +7,11 @@ import { summarizeSession, sessionLabel } from "../utils/attendance";
  * @param {Object} props
  * @param {import("../types").Student[]} props.students
  * @param {string} props.sessionKey
- * @param {Set<string>} props.pending    "row#sessionKey" keys in flight
+ * @param {Set<string>} props.pending    "row#sessionKey" or "row#remark" keys in flight
  * @param {(student: import("../types").Student, sessionKey: string) => void} props.onToggle
+ * @param {(student: import("../types").Student, remark: string) => Promise<void>} props.onSaveRemark
  */
-export default function AttendanceList({ students, sessionKey, pending, onToggle }) {
+export default function AttendanceList({ students, sessionKey, pending, onToggle, onSaveRemark }) {
   if (students.length === 0) {
     return <p className="px-4 py-20 text-center text-sm text-stone-400">학생이 없습니다.</p>;
   }
@@ -49,7 +50,9 @@ export default function AttendanceList({ students, sessionKey, pending, onToggle
             student={student}
             sessionKey={sessionKey}
             pending={pending.has(`${student.row}#${sessionKey}`)}
+            remarkPending={pending.has(`${student.row}#remark`)}
             onToggle={onToggle}
+            onSaveRemark={onSaveRemark}
           />
         ))}
       </ul>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchClasses, fetchClass, setAttendance } from "../api/gasApi";
+import { fetchClasses, fetchClass, setAttendance, setRemark } from "../api/gasApi";
 
 /** Small mount-guard so we never setState after unmount. */
 function useMounted() {
@@ -162,5 +162,48 @@ export function useAttendance(className) {
     [className, mounted]
   );
 
-  return { students, teachers, loading, error, pending, refresh: () => load(), toggle };
+  const saveRemark = useCallback(
+    /**
+     * @param {import("../types").Student} student
+     * @param {string} remark
+     */
+    async (student, remark) => {
+      if (!className) return;
+      const prev = student.remark ?? "";
+      const pendKey = `${student.row}#remark`;
+
+      setStudents((prevList) =>
+        prevList.map((s) => (s.row === student.row ? { ...s, remark } : s))
+      );
+      setPending((prev) => new Set(prev).add(pendKey));
+
+      try {
+        const updated = await setRemark({ className, row: student.row, remark });
+        if (mounted.current && updated) {
+          setStudents((prevList) =>
+            prevList.map((s) => (s.row === updated.row ? updated : s))
+          );
+        }
+      } catch (err) {
+        if (mounted.current) {
+          setStudents((prevList) =>
+            prevList.map((s) => (s.row === student.row ? { ...s, remark: prev } : s))
+          );
+          setError(err?.message ?? "비고 저장에 실패했습니다. 다시 시도해 주세요.");
+        }
+        throw err;
+      } finally {
+        if (mounted.current) {
+          setPending((prev) => {
+            const n = new Set(prev);
+            n.delete(pendKey);
+            return n;
+          });
+        }
+      }
+    },
+    [className, mounted]
+  );
+
+  return { students, teachers, loading, error, pending, refresh: () => load(), toggle, saveRemark };
 }

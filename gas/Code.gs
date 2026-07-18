@@ -150,6 +150,7 @@ function readClass_(className) {
       church: String(row[COL.church - 1] || "").trim(),
       className: className,
       attendance: attendance,
+      remark: String(row[COL.remark - 1] || "").trim(),
       // NOTE: 보호자(row[COL.guardian-1]) and 연락처(row[COL.contact-1]) are
       // intentionally NOT included — they never leave the backend.
     });
@@ -189,9 +190,9 @@ function doGet(e) {
 }
 
 /**
- * POST { action: "setAttendance", payload: { className, row, sessionKey, present } }
- * → sets one session cell to "O" (present) or blank (absent) and returns the
- *   updated student record.
+ * POST
+ *   { action: "setAttendance", payload: { className, row, sessionKey, present } }
+ *   { action: "setRemark",     payload: { className, row, remark } }
  */
 function doPost(e) {
   try {
@@ -208,7 +209,18 @@ function doPost(e) {
 
       sheet.getRange(row, col).setValue(present ? PRESENT_MARK : "");
 
-      // Return the freshly-read student so the client can reconcile state.
+      const students = readClass_(className);
+      const updated = students.find((s) => s.row === row) || null;
+      return json_({ ok: true, data: updated });
+    }
+
+    if (body.action === "setRemark") {
+      const { className, row, remark } = body.payload || {};
+      const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(className);
+      if (!sheet) throw new Error("반을 찾을 수 없습니다: " + className);
+
+      sheet.getRange(row, COL.remark).setValue(remark == null ? "" : String(remark));
+
       const students = readClass_(className);
       const updated = students.find((s) => s.row === row) || null;
       return json_({ ok: true, data: updated });

@@ -5,7 +5,7 @@ export const APP_META = {
   title: "출석부",
   event: "여름성경학교",
   version: pkg.version,
-  author: "서울양천교회 공은호",
+  author: "대한예수교침례회 서울양천교회 공은호",
   repo: "https://github.com/devRenio/vbs-web",
 };
 
